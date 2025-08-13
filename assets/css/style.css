@@ -1,0 +1,79 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f0f4f8;
+}
+
+.card {
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    background-color: #fff;
+    transition: transform 0.2s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.btn-success {
+    background-color: #38b000;
+    border-color: #38b000;
+    font-weight: 600;
+}
+
+.btn-success:hover {
+    background-color: #2e8b00;
+    border-color: #2e8b00;
+}
+
+.btn-secondary {
+    font-weight: 600;
+}
+
+.alert {
+    border-radius: 0.75rem;
+}
+
+.list-group-item {
+    border: 1px solid #e0e7ee;
+    border-radius: 0.75rem;
+    margin-bottom: 0.75rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.list-group-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.list-group-item h5 {
+    font-weight: 600;
+    color: #1e3a5f;
+}
+
+.list-group-item p {
+    color: #6c757d;
+    font-size: 0.95rem;
+}
+
+.list-group-item small {
+    color: #90a4ae;
+}
+
+.badge {
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    color: #1e3a5f !important;
+}
+
+.navbar-nav .nav-link {
+    font-weight: 500;
+    color: #1e3a5f !important;
+}

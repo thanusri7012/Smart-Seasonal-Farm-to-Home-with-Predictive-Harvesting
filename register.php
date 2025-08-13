@@ -1,8 +1,8 @@
 <?php
 include 'includes/db_connection.php';
 
-$name = $email = $password = $confirm_password = $user_type = "";
-$name_err = $email_err = $password_err = $confirm_password_err = "";
+$name = $email = $phone_number = $password = $confirm_password = $user_type = "";
+$name_err = $email_err = $phone_number_err = $password_err = $confirm_password_err = "";
 
 if($_SERVER["REQUEST_METHOD"] == "POST"){
     if(empty(trim($_POST["name"]))){
@@ -31,6 +31,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             $stmt->close();
         }
     }
+
+    if(empty(trim($_POST["phone_number"]))){
+        $phone_number_err = "Please enter your phone number.";
+    } else{
+        $phone_number = trim($_POST["phone_number"]);
+    }
     
     if(empty(trim($_POST["password"]))){
         $password_err = "Please enter a password.";     
@@ -51,13 +57,14 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     
     $user_type = $_POST["user_type"];
 
-    if(empty($name_err) && empty($email_err) && empty($password_err) && empty($confirm_password_err)){
-        $sql = "INSERT INTO users (name, email, password, user_type) VALUES (?, ?, ?, ?)";
+    if(empty($name_err) && empty($email_err) && empty($phone_number_err) && empty($password_err) && empty($confirm_password_err)){
+        $sql = "INSERT INTO users (name, email, phone_number, password, user_type) VALUES (?, ?, ?, ?, ?)";
         
         if($stmt = $conn->prepare($sql)){
-            $stmt->bind_param("ssss", $param_name, $param_email, $param_password, $param_user_type);
+            $stmt->bind_param("sssss", $param_name, $param_email, $param_phone_number, $param_password, $param_user_type);
             $param_name = $name;
             $param_email = $email;
+            $param_phone_number = $phone_number;
             $param_password = password_hash($password, PASSWORD_DEFAULT);
             $param_user_type = $user_type;
             
@@ -80,6 +87,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register - Smart Farm</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body class="bg-light">
     <div class="container d-flex justify-content-center align-items-center vh-100">
@@ -107,6 +115,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                     <label for="email" class="form-label">Email address</label>
                     <input type="email" name="email" class="form-control <?php echo (!empty($email_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $email; ?>">
                     <span class="invalid-feedback"><?php echo $email_err; ?></span>
+                </div>
+                <div class="mb-3">
+                    <label for="phone_number" class="form-label">Phone Number</label>
+                    <input type="text" name="phone_number" class="form-control <?php echo (!empty($phone_number_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $phone_number; ?>">
+                    <span class="invalid-feedback"><?php echo $phone_number_err; ?></span>
                 </div>
                 <div class="mb-3">
                     <label for="password" class="form-label">Password</label>

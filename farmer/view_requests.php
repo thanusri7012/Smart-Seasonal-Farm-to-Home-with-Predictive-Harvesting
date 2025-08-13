@@ -10,8 +10,11 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || $_SESSION
 
 $requests = [];
 
-// Query to get a count of each crop request
-$sql = "SELECT crop_name, COUNT(*) as request_count FROM crop_requests GROUP BY crop_name ORDER BY request_count DESC";
+// Query to get crop requests along with buyer details
+$sql = "SELECT cr.crop_name, u.name AS buyer_name, u.phone_number, cr.request_date
+        FROM crop_requests cr
+        JOIN users u ON cr.buyer_id = u.id
+        ORDER BY cr.request_date DESC";
 
 if ($result = $conn->query($sql)) {
     while ($row = $result->fetch_assoc()) {
@@ -28,6 +31,7 @@ $conn->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Community Crop Requests</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
     <div class="container mt-5">
@@ -38,9 +42,13 @@ $conn->close();
         <?php if (!empty($requests)): ?>
             <div class="list-group">
                 <?php foreach ($requests as $request): ?>
-                    <div class="list-group-item d-flex justify-content-between align-items-center">
-                        <h5 class="mb-1"><?php echo htmlspecialchars($request['crop_name']); ?></h5>
-                        <span class="badge bg-success rounded-pill"><?php echo htmlspecialchars($request['request_count']); ?> requests</span>
+                    <div class="list-group-item list-group-item-action flex-column align-items-start">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1"><?php echo htmlspecialchars($request['crop_name']); ?></h5>
+                            <small class="text-muted">Requested on: <?php echo date("F j, Y", strtotime($request['request_date'])); ?></small>
+                        </div>
+                        <p class="mb-1">**Buyer:** <?php echo htmlspecialchars($request['buyer_name']); ?></p>
+                        <p class="mb-1">**Contact:** <?php echo htmlspecialchars($request['phone_number']); ?></p>
                     </div>
                 <?php endforeach; ?>
             </div>
