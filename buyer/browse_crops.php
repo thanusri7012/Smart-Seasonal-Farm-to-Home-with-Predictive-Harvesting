@@ -7,8 +7,6 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || $_SESSION
     exit;
 }
 
-$farmer_id = $_SESSION["user_id"];
-
 $sql = "SELECT p.*, u.name as farmer_name FROM products p JOIN users u ON p.farmer_id = u.id WHERE p.estimated_harvest_start >= CURDATE() ORDER BY p.estimated_harvest_start ASC";
 $result = $conn->query($sql);
 ?>
@@ -51,7 +49,7 @@ $result = $conn->query($sql);
                     echo '</div>';
                 }
             } else {
-                echo '<p>No crops are available at this time. Check back later!</p>';
+                echo '<div class="alert alert-info" role="alert">No crops are available at this time. Check back later!</div>';
             }
             $conn->close();
             ?>

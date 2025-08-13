@@ -16,7 +16,7 @@ $error = "";
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['post_update'])) {
     $product_id = intval($_POST['product_id']);
     $update_text = trim($_POST['update_text']);
-    $image_url = null;
+    $image_url = '';
 
     // Handle file upload
     if (isset($_FILES['update_image']) && $_FILES['update_image']['error'] == 0) {
@@ -25,7 +25,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['post_update'])) {
         $target_file = $target_dir . uniqid() . '_' . $image_name;
         $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
 
-        // Check if image file is a actual image or fake image
         $check = getimagesize($_FILES["update_image"]["tmp_name"]);
         if($check !== false) {
             if (move_uploaded_file($_FILES["update_image"]["tmp_name"], $target_file)) {
@@ -66,7 +65,6 @@ if ($stmt_crops = $conn->prepare($sql_crops)) {
     }
     $stmt_crops->close();
 }
-
 $conn->close();
 ?>
 
@@ -76,11 +74,11 @@ $conn->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Crops & Updates</title>
-    <link rel="stylesheet" href="../assets/css/style.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
+<body class="bg-light">
     <div class="container mt-5">
+        <a href="dashboard.php" class="btn btn-secondary mb-3">← Back to Dashboard</a>
         <h3 class="mb-4">My Crops & Live Updates 🧑‍🌾</h3>
 
         <?php if (!empty($success_message)): ?>
@@ -119,18 +117,22 @@ $conn->close();
             </form>
         </div>
 
-        <div class="list-group">
-            <?php foreach ($crops as $crop): ?>
-                <div class="list-group-item d-flex justify-content-between align-items-center">
-                    <div>
-                        <h5 class="mb-1"><?php echo htmlspecialchars($crop['crop_name']); ?></h5>
-                        <small class="text-muted">Harvest: <?php echo htmlspecialchars($crop['estimated_harvest_start']); ?></small>
+        <h4 class="mb-3">My Current Crops</h4>
+        <?php if (!empty($crops)): ?>
+            <div class="list-group">
+                <?php foreach ($crops as $crop): ?>
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="mb-1"><?php echo htmlspecialchars($crop['crop_name']); ?></h5>
+                            <small class="text-muted">Harvest: <?php echo htmlspecialchars($crop['estimated_harvest_start']); ?></small>
+                        </div>
+                        <a href="crop_details.php?id=<?php echo $crop['id']; ?>" class="btn btn-sm btn-info text-white">View Details</a>
                     </div>
-                    <a href="#" class="btn btn-sm btn-info text-white">View Details</a>
-                </div>
-            <?php endforeach; ?>
-        </div>
-        <a href="dashboard.php" class="btn btn-secondary mt-3">Back to Dashboard</a>
+                <?php endforeach; ?>
+            </div>
+        <?php else: ?>
+            <div class="alert alert-info">You have not added any crops yet.</div>
+        <?php endif; ?>
     </div>
 </body>
 </html>

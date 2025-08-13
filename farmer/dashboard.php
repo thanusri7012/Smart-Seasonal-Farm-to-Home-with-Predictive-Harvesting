@@ -44,6 +44,9 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || $_SESSION[
                         <a class="nav-link" href="../pickup_map.php">Pickup Map</a>
                     </li>
                     <li class="nav-item">
+    <a class="nav-link" href="../profile.php">My Profile</a>
+</li>
+                    <li class="nav-item">
                         <a class="nav-link btn btn-outline-success" href="../logout.php">Logout</a>
                     </li>
                 </ul>

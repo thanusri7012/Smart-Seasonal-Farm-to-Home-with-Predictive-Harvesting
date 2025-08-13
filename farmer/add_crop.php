@@ -29,7 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $sql = "INSERT INTO products (farmer_id, crop_name, planting_date, estimated_harvest_start, estimated_harvest_end, base_price, discount_percentage, stock_quantity) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         
         if ($stmt = $conn->prepare($sql)) {
-            $stmt->bind_param("issssdi", $farmer_id, $crop_name, $planting_date, $estimated_harvest_start, $estimated_harvest_end, $base_price, $discount_percentage, $stock_quantity);
+            $stmt->bind_param("issssddi", $farmer_id, $crop_name, $planting_date, $estimated_harvest_start, $estimated_harvest_end, $base_price, $discount_percentage, $stock_quantity);
             if ($stmt->execute()) {
                 $success_message = "Crop added successfully! Harvest predicted for **$estimated_harvest_start** to **$estimated_harvest_end**.";
                 $crop_name = $planting_date = $base_price = $stock_quantity = $discount_percentage = "";

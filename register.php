@@ -1,4 +1,5 @@
 <?php
+session_start(); // Add this line here
 include 'includes/db_connection.php';
 
 $name = $email = $phone_number = $password = $confirm_password = $user_type = "";
@@ -69,7 +70,21 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             $param_user_type = $user_type;
             
             if($stmt->execute()){
-                header("location: login.php");
+                // Get the ID of the new user
+                $new_user_id = $conn->insert_id;
+                
+                // Set session variables and redirect
+                $_SESSION["loggedin"] = true;
+                $_SESSION["user_id"] = $new_user_id;
+                $_SESSION["name"] = $name;
+                $_SESSION["user_type"] = $user_type;
+
+                if($user_type == 'farmer'){
+                    header("location: farmer/dashboard.php");
+                } else {
+                    header("location: buyer/dashboard.php");
+                }
+                exit;
             } else{
                 echo "Something went wrong. Please try again later.";
             }
@@ -87,7 +102,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register - Smart Farm</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body class="bg-light">
     <div class="container d-flex justify-content-center align-items-center vh-100">
