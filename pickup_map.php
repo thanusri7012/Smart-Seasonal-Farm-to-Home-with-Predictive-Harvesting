@@ -37,7 +37,7 @@ $points_json = json_encode($pickup_points);
 
     <script>
         function initMap() {
-            const myLatLng = { lat: 40.7128, lng: -74.0060 }; // Default map center (e.g., New York City)
+            const myLatLng = { lat: 11.0168, lng: 76.9558 }; // Coordinates for Coimbatore, Tamil Nadu
             const map = new google.maps.Map(document.getElementById("map"), {
                 zoom: 12,
                 center: myLatLng,
@@ -61,6 +61,6 @@ $points_json = json_encode($pickup_points);
             });
         }
     </script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBTu1OAsIx9vdtjRmIij_VYMLJ6TNjPVYM&callback=initMap" async defer></script>
 </body>
 </html>
