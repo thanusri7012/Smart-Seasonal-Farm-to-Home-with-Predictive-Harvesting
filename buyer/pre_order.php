@@ -11,6 +11,14 @@ $product_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 $product_details = null;
 $error = "";
 $success_message = "";
+$pickup_points = [];
+
+// Fetch all available pickup points
+$sql_points = "SELECT id, name FROM pickup_points";
+$result_points = $conn->query($sql_points);
+while ($row = $result_points->fetch_assoc()) {
+    $pickup_points[] = $row;
+}
 
 if ($product_id > 0) {
     $sql = "SELECT p.*, u.name as farmer_name FROM products p JOIN users u ON p.farmer_id = u.id WHERE p.id = ?";
@@ -26,6 +34,7 @@ if ($product_id > 0) {
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['pre_order'])) {
     $quantity = intval($_POST['quantity']);
     $buyer_id = $_SESSION["user_id"];
+    $pickup_point_id = intval($_POST['pickup_point_id']);
     
     if ($product_details) {
         if ($quantity > $product_details['stock_quantity']) {
@@ -36,18 +45,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['pre_order'])) {
                  $price_per_unit = $price_per_unit * (1 - $product_details['discount_percentage'] / 100);
             }
 
-            $sql = "INSERT INTO pre_orders (buyer_id, product_id, quantity, price_per_unit) VALUES (?, ?, ?, ?)";
+            $sql = "INSERT INTO pre_orders (buyer_id, product_id, pickup_point_id, quantity, price_per_unit) VALUES (?, ?, ?, ?, ?)";
             if ($stmt = $conn->prepare($sql)) {
-                $stmt->bind_param("iidi", $buyer_id, $product_id, $quantity, $price_per_unit);
+                $stmt->bind_param("iiidi", $buyer_id, $product_id, $pickup_point_id, $quantity, $price_per_unit);
                 if ($stmt->execute()) {
-                    // Update the stock quantity in the products table
                     $sql_update_stock = "UPDATE products SET stock_quantity = stock_quantity - ? WHERE id = ?";
                     if ($stmt_update = $conn->prepare($sql_update_stock)) {
                         $stmt_update->bind_param("ii", $quantity, $product_id);
                         $stmt_update->execute();
                         $stmt_update->close();
                     }
-
                     $success_message = "Your pre-order for **" . htmlspecialchars($product_details['crop_name']) . "** has been placed successfully! 🎉";
                 } else {
                     $error = "Error placing order: " . $stmt->error;
@@ -105,6 +112,15 @@ $conn->close();
                 <div class="mb-3">
                     <label for="quantity" class="form-label">Quantity to Order</label>
                     <input type="number" name="quantity" class="form-control" min="1" max="<?php echo htmlspecialchars($product_details['stock_quantity']); ?>" required>
+                </div>
+                <div class="mb-3">
+                    <label for="pickup_point_id" class="form-label">Select Pickup Point</label>
+                    <select name="pickup_point_id" class="form-control" required>
+                        <option value="">-- Choose a Pickup Point --</option>
+                        <?php foreach ($pickup_points as $point): ?>
+                            <option value="<?php echo htmlspecialchars($point['id']); ?>"><?php echo htmlspecialchars($point['name']); ?></option>
+                        <?php endforeach; ?>
+                    </select>
                 </div>
                 <button type="submit" name="pre_order" class="btn btn-success">Confirm Pre-Order</button>
             </form>

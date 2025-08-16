@@ -2,7 +2,6 @@
 session_start();
 include '../includes/db_connection.php';
 
-// Check if user is logged in and is a farmer
 if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || $_SESSION["user_type"] !== 'farmer') {
     header("location: ../login.php");
     exit;
@@ -11,10 +10,11 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || $_SESSION
 $farmer_id = $_SESSION['user_id'];
 $pre_orders = [];
 
-$sql = "SELECT p.crop_name, po.quantity, po.order_date, po.price_per_unit, u.name AS buyer_name 
+$sql = "SELECT p.crop_name, po.quantity, po.order_date, po.price_per_unit, u.name AS buyer_name, pp.name AS pickup_point_name, pp.address AS pickup_point_address
         FROM pre_orders po
         JOIN products p ON po.product_id = p.id
         JOIN users u ON po.buyer_id = u.id
+        JOIN pickup_points pp ON po.pickup_point_id = pp.id
         WHERE p.farmer_id = ?
         ORDER BY po.order_date DESC";
 
@@ -36,7 +36,6 @@ $conn->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Crop Pre-Orders</title>
-    <link rel="stylesheet" href="../assets/css/style.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
@@ -56,6 +55,7 @@ $conn->close();
                         <p class="mb-1">**Buyer:** <?php echo htmlspecialchars($order['buyer_name']); ?></p>
                         <p class="mb-1">**Quantity:** <?php echo htmlspecialchars($order['quantity']); ?> units</p>
                         <p class="mb-1">**Price per unit:** $<?php echo number_format($order['price_per_unit'], 2); ?></p>
+                        <p class="mb-1">**Pickup Hub:** <?php echo htmlspecialchars($order['pickup_point_name']); ?> (<?php echo htmlspecialchars($order['pickup_point_address']); ?>)</p>
                     </div>
                 <?php endforeach; ?>
             </div>
