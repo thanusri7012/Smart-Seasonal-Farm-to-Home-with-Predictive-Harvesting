@@ -61,6 +61,6 @@ $points_json = json_encode($pickup_points);
             });
         }
     </script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBTu1OAsIx9vdtjRmIij_VYMLJ6TNjPVYM&callback=initMap" async defer></script>
+    <script src="" async defer></script>
 </body>
 </html>
